@@ -17,13 +17,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role == 'admin' &&  Auth::user()->status == 1) {
-           return $next($request);
-        }
-        elseif (Auth::check() && Auth::user()->status != 1) {
-         Auth::logout();
-         Session::flush('auth-error',__('Your Account Is Deactivated'));
-        }
+        // if (Auth::check() && Auth::user()->role == 'admin' &&  Auth::user()->status == 1) {
+        //    return $next($request);
+        // }
+        // elseif (Auth::check() && Auth::user()->status != 1) {
+        //  Auth::logout();
+        //  Session::flush('auth-error',__('Your Account Is Deactivated'));
+        // }
         
         return redirect('/login');
     }
