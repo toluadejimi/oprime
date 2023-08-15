@@ -24,19 +24,19 @@ class UnauthorizedException extends HttpException
         return $exception;
     }
 
-    public static function forPermissions(array $permissions): self
-    {
-        $message = 'User does not have the right permissions.';
+    // public static function forPermissions(array $permissions): self
+    // {
+    //     $message = 'User does not have the right permissions.';
 
-        if (config('permission.display_permission_in_exception')) {
-            $message .= ' Necessary permissions are '.implode(', ', $permissions);
-        }
+    //     if (config('permission.display_permission_in_exception')) {
+    //         $message .= ' Necessary permissions are '.implode(', ', $permissions);
+    //     }
 
-        $exception = new static(403, $message, null, []);
-        $exception->requiredPermissions = $permissions;
+    //     $exception = new static(403, $message, null, []);
+    //     $exception->requiredPermissions = $permissions;
 
-        return $exception;
-    }
+    //     return $exception;
+    // }
 
     public static function forRolesOrPermissions(array $rolesOrPermissions): self
     {
