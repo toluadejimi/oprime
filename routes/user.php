@@ -27,9 +27,17 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth','user
 
    Route::get('verify-trx',                      [ProductController::class,'verify_payment']);
 
+   Route::post('resolve-now',                      [ProductController::class,'resolve_now']);
+
+
+
+
+
 
 
    Route::resource('device',                    USER\DeviceController::class);
+
+   Route::get('resolve-deposit',                      [ProductController::class,'resolve_account']);
 
 
 

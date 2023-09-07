@@ -92,10 +92,14 @@
            <button
 
                 class="btn btn-neutral my-3"><i class="fas fa-university"></i> {{ __('Deposit Now') }}
+
                 
          
                 
               </button> 
+
+                    <a class="btn btn-warning my-3 text-white" href="/user/resolve-deposit"> <i class="fas fa-info-circle"></i> {{ __('Resolve Deposit') }} </a> 
+
 
               <h6 style="color: blue !important;" class="">Fund your account instantly</h6>
               <p style="color: red !important;" class="">If you are not ready to fund your wallet do not start a transaction</p>

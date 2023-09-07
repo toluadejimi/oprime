@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\ItemLog;
 use App\Models\NetflixProduct;
 use App\Models\NetLog;
 use App\Models\Product;
@@ -34,11 +35,18 @@ class DeviceController extends Controller
 
         $products=Product::all();
         $netflix_p = NetflixProduct::all();
+        $gv = ItemLog::where('item_id', 1)->count();
+        $gv2 = ItemLog::where('item_id', 10)->count();
+        $tn = ItemLog::where('item_id', 2)->count();
+        $nf = ItemLog::where('item_id', 3)->count();
 
         
 
+        return view('user.device.index',compact('devices', 'gv', 'gv2','tn', 'nf','products', 'netflix_p'));
 
-        return view('user.device.index',compact('devices', 'products', 'netflix_p'));
+
+
+
     }
 
     /**

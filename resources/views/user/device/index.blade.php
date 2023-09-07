@@ -41,7 +41,6 @@
                <div class="col">
                  
                   <h5 class="card-title text-uppercase text-muted mb-2">Welcome {{ Auth::user()->name }}, </h5>
-
                   <p> Buy Google Voice, Talkatone, Text-Now etc logs now</p>
                </div>
                <div class="col-auto">
@@ -51,6 +50,26 @@
                </div>
             </div>
          </div>
+      </div>
+
+      <div class="col-xl-12 col-md-6 mb-4">
+
+      <button type="button" class="btn btn-primary my-2">
+         Server 1 - GV  <span class="badge badge-light"><strong>{{ $gv }}</strong></span>
+       </button>
+
+       <button type="button" class="btn btn-success my-2">
+         Server 2 - GV  <span class="badge badge-light"><strong>{{ $gv2 }}</strong></span>
+       </button>
+
+       <button type="button" class="btn btn-warning my-2">
+         Talkatone <span class="badge badge-light"><strong>{{ $tn }}</strong></span>
+       </button>
+
+       <button type="button" class="btn btn-danger my-2">
+         Netflix log <span class="badge badge-light"><strong>{{ $nf }}</strong></span>
+       </button>
+
       </div>
 
 
@@ -142,21 +161,32 @@
 
                   </form>
 
+
+                  <div class="row">
+                     <div class="col-xl-6 col-md-6">
+                        <a button href="https://chat.whatsapp.com/KSh1zHhSeew4WXKsWU1slP" type="button" class="btn btn-primary my-2">
+                        CLICK HERE TO JOIN OUR WHATSAPP GROUP <span class="badge badge-light"></span>
+                         </button> </a>
+                        <a button href="https://wa.me/2347042591543" type="button" class="btn btn-warning my-2">
+                           BUY USA NUMBER 4 VERIFICATIONS <span class="badge badge-light"></span>
+                        </button> </a>
+                    
+                        <a button href="https://wa.me/2347042591543" type="button" class="btn btn-success my-2">
+                           BUY UK NUMBER 4 VERIFICATIONS <span class="badge badge-light"></span>
+                        </button> </a>
+
+
+                        <a button href="https://oprime.com.ng/wordpress/our-rules" type="button" class="btn btn-danger my-2">
+                           CLICK HERE TO READ OUR RULES <span class="badge badge-light"></span>
+                        </button> </a>
+                     </div>
+
+
+                  </div>
+
                   <div>
-                  <button style="color:blue; border:none; border-radius:20px; padding: 15px; background-color: blue;" class="fa fa-users"  type="button"><a style="color: white;" href="https://chat.whatsapp.com/KSh1zHhSeew4WXKsWU1slP">CLICK HERE TO JOIN OUR WHATSAPP GROUP</a></button>
-<br>
-<br>
-<br>
-<button style="color: white; border:none; border-radius:20px; padding: 15px; background-color: blue;" class="fa fa-users"  type="button"><a style="color: white;" href="https://wa.me/2347042591543">BUY USA NUMBER 4 VERIFICATIONS</a></button>
-<br>
-<br>
-<br>
 
-<button style=" border:none; border-radius:20px; padding: 15px; background-color: blue;" class="fa fa-users"  type="button"><a style="color: white" href="https://wa.me/2348169581573">BUY UK NUMBER 4 VERIFICATIONS</a></button>
-  <br>
-  <br>
 
-  <button style="background-color: green; padding:6px; border:none; border-radius:10px" type="button"><a style="color: white;" href="https://oprime.com.ng/wordpress/our-rules">CLICK HERE TO READ OUR RULES</a></button>
 </div>
 
                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -374,6 +404,7 @@
    </div>
 
 
+   <div class="col-xl-6 col-md-6">
    
 <div style="background-color: green;">
     <h3 style="color: red;"><strong>Note: Domain Gv is not Working for whatsapp again</strong></h3>
@@ -385,6 +416,7 @@
     <p style="color: white;">If your Gmail Google Voice account gets disabled, kindly request a review from Google. They will unblock it for you within 1 to 2 days.</p><br>
 </div>
 
+</div>
 </div>
 
 <input type="hidden" id="base_url" value="{{ url('/') }}">

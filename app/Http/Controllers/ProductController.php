@@ -42,6 +42,74 @@ class ProductController extends Controller
         return Redirect::to($url);
     }
 
+
+    public function  resolve_account(request $request)
+    {
+
+
+        return view('user.device.resolve');
+
+
+    
+    
+    }
+
+    public function  resolve_now(request $request)
+    {
+
+
+        $session_id = $request->session_id;
+
+
+
+        if($session_id == null){
+            return back()->with('error', "session id or amount cant be empty");
+        }
+
+
+        $curl = curl_init();
+
+        $databody= array('session_id' => "$session_id");
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://web.enkpay.com/api/resolve',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $databody,
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+        $message = $var->message ?? null;
+        $status = $var->status ?? null;
+
+        $amount = $var->amount ?? null;
+
+
+
+
+        if($status == true){
+            User::where('id', Auth::id())->increment('wallet', $var->amount);
+            return back()->with('message', "Transaction successfully Resolved, NGN $amount added to ur wallet");
+        }
+
+        if($status == false){
+            return back()->with('error', "$message");
+        }
+    
+
+    
+    
+    }
+   
+
     public function verify_payment(request $request)
     {
 
@@ -296,6 +364,11 @@ class ProductController extends Controller
 
         return back()->with('error', "Insufficient Balance, Fund your wallet");
     }
+
+
+
+
+
 
     public function areacode(Request $request)
     {
