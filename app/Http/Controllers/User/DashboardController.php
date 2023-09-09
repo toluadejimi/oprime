@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use App\Models\Sold;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -29,8 +30,10 @@ class DashboardController extends Controller
 
 
         $whatapplink = Link::where('name', 'whatsapp')->first()->data ?? null; 
+
+        $adxtext = Menu::where('id', 2)->first()->data ?? null;
        
-        return view('user.dashboard', compact('transactions', 'whatapplink', 'c_logs', 'tc_log', 'request'));
+        return view('user.dashboard', compact('transactions', 'whatapplink', 'c_logs', 'tc_log', 'request', 'adxtext'));
     }
 
     public function dashboardData()

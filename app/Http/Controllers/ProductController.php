@@ -97,6 +97,12 @@ class ProductController extends Controller
 
         if($status == true){
             User::where('id', Auth::id())->increment('wallet', $var->amount);
+
+            
+
+
+
+
             return back()->with('message', "Transaction successfully Resolved, NGN $amount added to ur wallet");
         }
 
