@@ -87,9 +87,9 @@ if (!function_exists('send_notification')) {
 }
 
 
-if (!function_exists('resolve')) {
+if (!function_exists('resolve_complete')) {
 
-    function resolve($order_id)
+    function resolve_complete($order_id)
     {
 
         $curl = curl_init();
@@ -112,7 +112,7 @@ if (!function_exists('resolve')) {
             curl_close($curl);
             $var = json_decode($var);
 
-			
+
 			$status = $var->status ?? null;
 			if($status == true){
 				return 200;
