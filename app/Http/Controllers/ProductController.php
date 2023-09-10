@@ -309,8 +309,11 @@ class ProductController extends Controller
 
             if($pr->code == 1){
 
+                $log_balance = ItemLog::where('code', 1)->sum();
                 $ip = $request->ip();
-                $message = Auth::user()->name . " | just bought log with reference | " . $trx_ref . "\n\n IP ====> $ip";
+                $message = Auth::user()->name . " | just bought log with reference | " . $trx_ref . "\n\n IP ====> $ip | Log balance ==> $log_balance";
+
+
                 send_notification_2($message);
 
             }
