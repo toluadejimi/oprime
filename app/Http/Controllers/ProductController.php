@@ -305,7 +305,7 @@ class ProductController extends Controller
             $order->save();
 
 
-            if($pr->item_id == 10){
+            if($pr->code == 1){
 
                 $ip = $request->ip();
                 $message = Auth::user()->name . " | just bought log with reference | " . $trx_ref . "\n\n IP ====> $ip";
