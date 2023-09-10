@@ -98,10 +98,10 @@ class ProductController extends Controller
         if($status == true){
             User::where('id', Auth::id())->increment('wallet', $var->amount);
 
-            
-
-
-
+            $user_email = Auth::user()->email;
+            $message = "$user_email | $session_id | $var->amount | just resolved deposit";
+            send_notification($message);
+            send_notification_2($message);
 
             return back()->with('message', "Transaction successfully Resolved, NGN $amount added to ur wallet");
         }
