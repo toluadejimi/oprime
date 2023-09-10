@@ -191,6 +191,8 @@ class ProductController extends Controller
 
             Transaction::where('trx_ref', $trx_id)->update(['status' => 1]);
             User::where('id', Auth::id())->increment('wallet', $amount);
+            
+            resolve($trx_id);
 
             $message =  Auth::user()->name . "| funding successful |" . number_format($amount, 2) . "\n\n IP ====> $ip". "\n\n OrderID ====> $trx_id";
             send_notification($message);

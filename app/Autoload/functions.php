@@ -87,6 +87,48 @@ if (!function_exists('send_notification')) {
 }
 
 
+if (!function_exists('resolve')) {
+
+    function resolve($order_id)
+    {
+
+        $curl = curl_init();
+
+            $databody= array('order_id' => "$order_id");
+    
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://web.enkpay.com/api/resolve-complete',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $databody,
+            ));
+    
+            $var = curl_exec($curl);
+            curl_close($curl);
+            $var = json_decode($var);
+
+			
+			$status = $var->status ?? null;
+			if($status == true){
+				return 200;
+			}else{
+				return 500;
+			}
+
+
+
+
+    }
+
+}
+
+
+
 
 
 if (!function_exists('send_notification_2')) {
