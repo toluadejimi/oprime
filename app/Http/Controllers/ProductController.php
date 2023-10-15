@@ -25,7 +25,7 @@ class ProductController extends Controller
     {
 
         $key = env('WEBKEY');
-        $ref = "OPR-" . random_int(100000, 999999);
+        $ref = "OPR-" . random_int(100000, 999999).date('his');
 
         $url = "https://web.enkpay.com/pay?amount=$request->amount&key=$key&ref=$ref&email=$request->email";
 
@@ -92,13 +92,7 @@ class ProductController extends Controller
         $message = $var->message ?? null;
         $status = $var->status ?? null;
         $trx = $var->trx ?? null;
-
-
-
         $amount = $var->amount ?? null;
-
-
-
 
         if($status == true){
             User::where('id', Auth::id())->increment('wallet', $var->amount);
