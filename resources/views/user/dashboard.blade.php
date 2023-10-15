@@ -8,33 +8,34 @@
 @if(Auth::user()->updated_at == null)
 
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Alert!</strong> Please update your password on your profile page . <a class="text-white" href="profile">Click here to update</a>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+  <strong>Alert!</strong> Please update your password on your profile page . <a class="text-white" href="profile">Click
+    here to update</a>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 @endif
 
 
 @if ($errors->any())
-      <div class="alert alert-danger">
-          <ul>
-              @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-              @endforeach
-          </ul>
-      </div>
-      @endif
-      @if (session()->has('message'))
-      <div class="alert alert-success">
-          {{ session()->get('message') }} 
-      </div>
-      @endif
-      @if (session()->has('error'))
-      <div class="alert alert-danger">
-          {{ session()->get('error') }}
-      </div>
-      @endif
+<div class="alert alert-danger">
+  <ul>
+    @foreach ($errors->all() as $error)
+    <li>{{ $error }}</li>
+    @endforeach
+  </ul>
+</div>
+@endif
+@if (session()->has('message'))
+<div class="alert alert-success">
+  {{ session()->get('message') }}
+</div>
+@endif
+@if (session()->has('error'))
+<div class="alert alert-danger">
+  {{ session()->get('error') }}
+</div>
+@endif
 
 
 <div class="card card-stats">
@@ -42,11 +43,19 @@
   <div class="card-body">
     <div class="row">
       <div class="col">
-        <h5 style="color: blue !important;" class="card-title text-uppercase text-muted mb-2">Welcome {{ Auth::user()->name }}, </h5>
+        <h5 style="color: blue !important;" class="card-title text-uppercase text-muted mb-2">Welcome {{
+          Auth::user()->name }}, </h5>
 
-         <center><a href="https://dashboard.oprime.com.ng/user/device"> <div class="alert alert-success" role="alert"><marquee>  😍 <b><font color="black">{{ $adxtext }}
-         </font></b> 😍 <a href="https://dashboard.oprime.com.ng/user/device"> <button type="button" class="btn btn-success"> Order Now ▶ </button></a>
-          </marquee></div></a></center>    
+        <center><a href="https://dashboard.oprime.com.ng/user/device">
+            <div class="alert alert-success" role="alert">
+              <marquee> 😍 <b>
+                  <font color="black">{{ $adxtext }}
+                  </font>
+                </b> 😍 <a href="https://dashboard.oprime.com.ng/user/device"> <button type="button"
+                    class="btn btn-success"> Order Now ▶ </button></a>
+              </marquee>
+            </div>
+          </a></center>
         <p> Welcome to Oprime, Buy all logs at an affordable price </p>
       </div>
 
@@ -59,7 +68,7 @@
     </div>
   </div>
 </div>
-  
+
 
 
 
@@ -84,32 +93,32 @@
               @csrf
 
               <div class="col-lg-6">
-              <label>Enter amount to fund (NGN)</label>
-              <input type="number"  class="form-control my-3" placeholder="Min 100 | Max 1,000,000" name="amount" required autofocus>
-              <input type="text"  hidden  name="email" value="{{ Auth::user()->email }}" autofocus>
+                <label>Enter amount to fund (NGN)</label>
+                <input type="number" class="form-control my-3" placeholder="Min 100 | Max 1,000,000" name="amount"
+                  required autofocus>
+                <input type="text" hidden name="email" value="{{ Auth::user()->email }}" autofocus>
 
 
-           <button
-
-                class="btn btn-neutral my-3"><i class="fas fa-university"></i> {{ __('Deposit Now') }}
-
-                
-         
-                
-              </button> 
-
-                    <a class="btn btn-warning my-3 text-white" href="/user/resolve-deposit"> <i class="fas fa-info-circle"></i> {{ __('Resolve Deposit') }} </a> 
+                <button class="btn btn-neutral my-3"><i class="fas fa-university"></i> {{ __('Deposit Now') }}
 
 
-              <h6 style="color: blue !important;" class="">Fund your account instantly</h6>
-              <p style="color: red !important;" class="">If you are not ready to fund your wallet do not start a transaction</p>
 
-              <p></p>
-<br>
-<div>
-  <button style="background-color: green; padding:6px; border:none; border-radius:10px" type="button"><a style="color: white;" href="https://oprime.com.ng/wordpress/our-rules">CLICK HERE TO READ OUR RULES</a></button>
-</div>
-<!-- <br>
+
+                </button>
+
+
+                <h6 style="color: blue !important;" class="">Fund your account instantly</h6>
+                <p style="color: red !important;" class="">If you are not ready to fund your wallet do not start a
+                  transaction</p>
+
+                <p></p>
+                <br>
+                <div>
+                  <button style="background-color: green; padding:6px; border:none; border-radius:10px" type="button"><a
+                      style="color: white;" href="https://oprime.com.ng/wordpress/our-rules">CLICK HERE TO READ OUR
+                      RULES</a></button>
+                </div>
+                <!-- <br>
                <button style="color:white; border:none; border-radius:20px; padding: 8px; background-color: red;"  type="button">  <a style="color: #E5F7FE;" class="nav-link {{ Request::is('user/rules*') ? 'active' : '' }}" href="{{ url('https://oprime.com.ng/wordpress/our-rules') }}">
       <i class="fi fi-rs-paper-plane"></i>
       <span class="nav-link-text">{{ __('CLICK ME TO READ MY RULES DONT SAY I DIDNT TELL YOU') }}</span>
@@ -124,14 +133,14 @@
 
 <br> -->
               </div>
-            
-            
-            
-            
-            
+
+
+
+
+
             </form>
 
-    
+
 
 
           </div>
@@ -142,19 +151,26 @@
               <br>
               <br>
             </div>
-    <button style="color:blue; border:none; border-radius:20px; padding: 15px; background-color: blue;" class="fa fa-users"  type="button"><a style="color: white;" href="https://chat.whatsapp.com/KSh1zHhSeew4WXKsWU1slP">CLICK HERE TO JOIN OUR WHATSAPP GROUP</a></button>
-<br>
-<br>
-<br>
-<button style="color: white; border:none; border-radius:20px; padding: 15px; background-color: blue;" class="fa fa-users"  type="button"><a style="color: white;" href="https://wa.me/2347042591543">BUY USA NUMBER 4 VERIFICATIONS</a></button>
-<br>
-<br>
-<br>
+            <button style="color:blue; border:none; border-radius:20px; padding: 15px; background-color: blue;"
+              class="fa fa-users" type="button"><a style="color: white;"
+                href="https://chat.whatsapp.com/KSh1zHhSeew4WXKsWU1slP">CLICK HERE TO JOIN OUR WHATSAPP
+                GROUP</a></button>
+            <br>
+            <br>
+            <br>
+            <button style="color: white; border:none; border-radius:20px; padding: 15px; background-color: blue;"
+              class="fa fa-users" type="button"><a style="color: white;" href="https://wa.me/2347042591543">BUY USA
+                NUMBER 4 VERIFICATIONS</a></button>
+            <br>
+            <br>
+            <br>
 
-<button style="color:blue; border:none; border-radius:20px; padding: 15px; background-color: blue;" class="fa fa-users"  type="button"><a style="color: white" href="https://wa.me/2348169581573">BUY UK NUMBER 4 VERIFICATIONS</a></button>
-  </div>
-<br>
-<br>
+            <button style="color:blue; border:none; border-radius:20px; padding: 15px; background-color: blue;"
+              class="fa fa-users" type="button"><a style="color: white" href="https://wa.me/2348169581573">BUY UK NUMBER
+                4 VERIFICATIONS</a></button>
+          </div>
+          <br>
+          <br>
 
           <div class="col-auto">
             <br>
@@ -203,17 +219,18 @@
               <div class="col-4">
 
                 <div> <a href="logs" class="btn btn-neutral"><i class="fas fa-bars"></i> {{ __('My Logs') }}</a>
-              
+
                 </div>
               </div>
 
-                <div class="col-4">
+              <div class="col-4">
 
-                  <a href="{{ $whatapplink ?? '#' }}" class="btn btn-neutral" target="_blank" ><i class="fa fa-users"></i> {{ __('Join whatsapp group') }}</a>
-                  
-                </div>
+                <a href="{{ $whatapplink ?? '#' }}" class="btn btn-neutral" target="_blank"><i class="fa fa-users"></i>
+                  {{ __('Join whatsapp group') }}</a>
 
-           
+              </div>
+
+
             </div>
 
 
@@ -381,10 +398,11 @@
         <table class="table align-items-center table-flush">
           <thead class="thead-light">
             <tr>
-              <th class="col-1">{{ __('Customer') }}</th>
+              <th class="col-1">{{ __('Order ID') }}</th>
               <th class="col-4">{{ __('Amount') }}</th>
               <th class="col-1">{{ __('Type') }}</th>
               <th class="col-1">{{ __('Status') }}</th>
+              <th class="col-1">{{ __('Resolve') }}</th>
               <th class="col-1 text-left">{{ __('Date') }}</th>
             </tr>
           </thead>
@@ -393,7 +411,7 @@
             @foreach($transactions ?? [] as $trx)
             <tr>
               <td class="">
-                {{ $trx->user->name ?? Auth::user()->name }}
+                {{ $trx->trx_ref }}
               </td>
 
               <td class="">
@@ -417,11 +435,26 @@
               @endif
 
 
+              {{-- <td><span class="badge rounded-pill bg-success text-white">Resolve</span></td> --}}
+
+              @if($trx->status == 0)
+              <td> <button data-toggle="modal" data-target="#resolve-deposit" class="btn btn-sm btn-warning my-3"
+                  type="button">Resolve Deposit</button></td>
+              @else
+
+              <td><span class="badge rounded-pill bg-success text-white">Completed</span></td>
+
+
+              @endif
 
 
               <td class="">
                 {{ $trx->created_at->format('d F y H i s') }}
               </td>
+
+
+
+
             </tr>
             @endforeach
           </tbody>
@@ -445,6 +478,43 @@
 
 <input type="hidden" id="static-data" value="{{ route('user.dashboard.static') }}">
 <input type="hidden" id="base_url" value="{{ url('/') }}">
+
+
+
+
+      <div class="modal fade" id="resolve-deposit" tabindex="-1" aria-labelledby="resolve-deposit" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Resolve Deposit</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <p>Resolve pending transactions by using your bank session ID / Refrence No on your transaction
+                recepit</p>
+
+              <form action="resolve-now" method="POST">
+                @csrf
+
+                <label class="my-3">Enter Session ID</label>
+                <div>
+                  <input type="text" name="session_id" required class="form-control" placeholder="Enter session ID">
+                </div>
+
+
+            </div>
+            <div class="modal-footer align-content-left">
+              <button type="button" class="btn btn-secondary float-left" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-success float-left">Verify</button>
+            </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+
 
 @endsection
 @push('js')

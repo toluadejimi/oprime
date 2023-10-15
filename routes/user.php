@@ -37,12 +37,14 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth','user
 
    Route::resource('device',                    USER\DeviceController::class);
 
-   Route::get('resolve-deposit',                      [ProductController::class,'resolve_account']);
+   //Route::get('resolve-deposit',                      [ProductController::class,'resolve_account']);
 
 
 
    //device routes
    Route::resource('device',                    USER\DeviceController::class);
+
+   Route::get('resolve-now',                      [ProductController::class,'resolve_now']);
 
 
    Route::get('device/{id}/qr',                 [USER\DeviceController::class,'scanQr'])->name('device.scan');

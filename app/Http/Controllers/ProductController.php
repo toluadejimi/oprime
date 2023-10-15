@@ -62,6 +62,7 @@ class ProductController extends Controller
 
 
 
+
         if($session_id == null){
             return back()->with('error', "session id or amount cant be empty");
         }
@@ -87,8 +88,12 @@ class ProductController extends Controller
         curl_close($curl);
         $var = json_decode($var);
 
+
         $message = $var->message ?? null;
         $status = $var->status ?? null;
+        $trx = $var->trx ?? null;
+
+
 
         $amount = $var->amount ?? null;
 
@@ -97,6 +102,8 @@ class ProductController extends Controller
 
         if($status == true){
             User::where('id', Auth::id())->increment('wallet', $var->amount);
+            Transaction::where('trx_ref', $trx)->update(['status' => 2]);
+
 
             $user_email = Auth::user()->email;
             $message = "$user_email | $session_id | $var->amount | just resolved deposit";
