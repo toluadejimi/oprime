@@ -10,6 +10,15 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth','user
    
    //all dashboard routes
    Route::get('dashboard',                       [USER\DashboardController::class, 'index'])->name('dashboard.index');
+   Route::get('instant',                       [USER\DashboardController::class, 'instant'])->name('user.instant');
+   Route::get('search',                       [USER\DashboardController::class, 'search'])->name('user.search');
+   Route::get('number',                       [USER\DashboardController::class, 'get_number'])->name('user.number');
+   Route::get('recheck',                       [USER\DashboardController::class, 'order_recheck'])->name('user.recheck');
+   Route::get('delete',                       [USER\DashboardController::class, 'order_delete'])->name('user.delete');
+
+
+
+
    Route::get('dashboard-static-data',           [USER\DashboardController::class, 'dashboardData'])->name('dashboard.static');
    Route::get('messages-transaction/{days}',     [USER\DashboardController::class, 'getMessagesTransaction'])->name('messages.static');
    Route::get('chatbot-transaction/{days}',      [USER\DashboardController::class, 'getChatbotTransaction'])->name('chatbot.static');

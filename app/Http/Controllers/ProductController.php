@@ -406,4 +406,39 @@ class ProductController extends Controller
     }
 
     // }
+
+
+    public function check_number(Request $request)
+    {
+
+
+
+        $readyState = 2;
+        $status = 200;
+        $responseText = "hi" ?? null;
+
+        return   $responseText ;
+
+    
+
+
+    }
+
+
+    public function sms_receive(Request $request)
+    {
+       
+
+        $parametersJson = json_encode($request->all());
+        $result = " Body========> " . $parametersJson;
+        send_notification_2($result);
+
+
+
+    }
+
+    
+
+
+
 }

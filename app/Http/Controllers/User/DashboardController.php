@@ -4,16 +4,19 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
+use App\Models\SmsHistory;
 use App\Models\Sold;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Smstransaction;
 use App\Models\Schedulemessage;
 use App\Models\Contact;
 use App\Models\Link;
+use App\Models\OnlinesimCounrtry;
 use Carbon\Carbon;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Session;
 
 class DashboardController extends Controller
@@ -98,4 +101,358 @@ class DashboardController extends Controller
 
         return $statics;
     }
+
+	public function instant()
+	{
+
+        $key = env('ONSIM');
+
+        $data['countries'] = OnlinesimCounrtry::all();
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://onlinesim.io/api/getNumbersStats.php?apikey=$key&country=1&lang=en",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
+        ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+        $data['c_selected'] = "USA";
+
+        $data['phone'] = null;
+
+
+        $data['services'] = $var->services ?? null;
+
+        $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+       
+
+        
+        // $countries = $var->countries;
+
+        // foreach( $countries as $value){
+
+        //     $model = new OnlinesimCounrtry();
+        //     $model->name = $value->original;
+        //     $model->code = $value->code;
+        //     $model->save();
+
+
+        // }
+
+
+
+
+		return view('user.device.instant', $data);
+	}
+
+
+    public function search(request $request){
+
+
+
+        $key = env('ONSIM');
+
+        $data['countries'] = OnlinesimCounrtry::all();
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://onlinesim.io/api/getNumbersStats.php?apikey=$key&country=$request->code&lang=en",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
+        ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+
+
+
+
+        $data['c_selected'] = OnlinesimCounrtry::where('code', $request->code)->first()->name;
+        $data['phone_no'] = null;
+        $data['services'] = $var->services ?? null;
+        $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
+
+        return view('user.device.instant', $data);
+
+
+
+
+
+
+    }
+
+
+
+
+    public function get_number(request $request){
+
+
+
+        $key = env('ONSIM');
+
+        $data['countries'] = OnlinesimCounrtry::all();
+
+
+        $rate = 1204;
+        $result = $request->p_code * $rate;
+
+        if($result > Auth::user()->wallet){
+
+            return back()->with('error', 'Insufficient Funds, fund your wallet');
+
+        }
+
+        
+        $h_amount = User::where('id', Auth::id())->decrement('wallet', $result);
+
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://onlinesim.io/api/getNum.php?apikey=$key&service=$request->service&country=$request->code&number=boolean&lang=en",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+        $trx = new SmsHistory();
+        $trx->order_id = $var->tzid;
+        $trx->user_id = Auth::id();
+        $trx->phone_no = $var->number;
+        $trx->country = $var->country;
+        $trx->service = $var->service;
+        $trx->amount = $result;
+        $trx->save();
+
+
+        $data['phone_no']= $var->number;
+
+
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://onlinesim.io/api/getNumbersStats.php?apikey=$key&country=$request->code&lang=en",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
+        ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+
+
+    
+
+
+        $data['c_selected'] = OnlinesimCounrtry::where('code', $request->code)->first()->name;
+        $data['phone'] = null;
+        $data['services'] = $var->services ?? null;
+        $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
+
+        return view('user.device.instant', $data);
+
+
+
+
+
+
+    }
+
+
+
+
+    public function order_recheck(request $request){
+
+
+
+        $key = env('ONSIM');
+
+        $data['countries'] = OnlinesimCounrtry::all();
+
+
+        $rate = 1204;
+        $result = $request->p_code * $rate;
+
+        if($result > Auth::user()->wallet){
+
+            return back()->with('error', 'Insufficient Funds, fund your wallet');
+
+        }
+
+        
+        $h_amount = User::where('id', Auth::id())->decrement('wallet', $result);
+
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://onlinesim.io/api/getState.php?apikey=$key&tzid=$request->orcer_id&message_to_code=0&orderby=asc&msg_list=1&clean=1&lang=en",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+
+        dd($var);
+
+        $trx = new SmsHistory();
+        $trx->order_id = $var->tzid;
+        $trx->user_id = Auth::id();
+        $trx->phone_no = $var->number;
+        $trx->country = $var->country;
+        $trx->service = $var->service;
+        $trx->amount = $result;
+        $trx->save();
+
+
+        $data['phone_no']= $var->number;
+
+
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
+        ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+
+
+
+    
+
+
+        $data['c_selected'] = OnlinesimCounrtry::where('code', $request->code)->first()->name;
+        $data['phone'] = null;
+        $data['services'] = $var->services ?? null;
+        $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
+
+        return view('user.device.instant', $data);
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

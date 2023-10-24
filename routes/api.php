@@ -22,6 +22,15 @@ use App\Http\Controllers\ProductController;
 Route::post('fetch-code', 'App\Http\Controllers\ProductController@areacode');
 
 
+Route::post('check-number', 'App\Http\Controllers\ProductController@check_number');
+
+Route::post('sms-receive', 'App\Http\Controllers\ProductController@sms_receive');
+
+
+
+
+
+
 
 
 Route::post('fetch-amount', [ProductController::class, 'amount']);

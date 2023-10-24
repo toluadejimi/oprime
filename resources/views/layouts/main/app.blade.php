@@ -22,9 +22,28 @@
   <link rel="stylesheet" href="{{ asset('assets/css/argon.css') }}" type="text/css">
   <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" type="text/css">
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/plugins/toastify-js/src/toastify.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/2.3.1/css/flag-icon.min.css" rel="stylesheet"/>
 
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/plugins/pace/pace-theme-default.min.css') }}">
   @stack('css')
+
+  <style>
+    #table-container {
+        display: flex;
+    }
+    table {
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    select {
+        padding: 5px;
+    }
+</style>
+
+
 </head>
 
 <body>
@@ -120,6 +139,38 @@
       }
   });
     
+  });
+</script>
+
+
+
+<script>
+  // Function to filter the table rows
+  function filterTable(input, table) {
+      var filter, table, tr, td, i, txtValue;
+      filter = input.value.toUpperCase();
+      table = document.getElementById(table);
+      tr = table.getElementsByTagName("tr");
+
+      for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[0]; // Change the index to the column you want to filter
+          if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+              } else {
+                  tr[i].style.display = "none";
+              }
+          }
+      }
+  }
+
+  // Attach event listeners to the search input elements
+  document.getElementById("search1").addEventListener("input", function () {
+      filterTable(this, "table1");
+  });
+  document.getElementById("search2").addEventListener("input", function () {
+      filterTable(this, "table2");
   });
 </script>
 

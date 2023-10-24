@@ -38,6 +38,13 @@
 @endif
 
 
+{{-- <div class="">
+
+  <a href="instant" class="btn btn-lg btn-primary text-white mb-4">SMS Verification <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">New</span></a>
+
+
+</div> --}}
+
 <div class="card card-stats">
   <!-- Card body -->
   <div class="card-body">
@@ -58,16 +65,12 @@
           </a></center>
         <p> Welcome to Oprime, Buy all logs at an affordable price </p>
       </div>
-
-
-      <div class="col-auto">
-        <div class="icon icon-shape bg-gradient-primary text-white rounded-circle shadow">
-          <i class="fas fa-server"></i>
-        </div>
-      </div>
     </div>
   </div>
 </div>
+
+
+
 
 
 
