@@ -125,7 +125,6 @@ class DashboardController extends Controller
         CURLOPT_HTTPHEADER => array(
             'Content-Type: application/json',
             'Accept: application/json',
-            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
         ),
         ));
 
@@ -133,35 +132,15 @@ class DashboardController extends Controller
         curl_close($curl);
         $var = json_decode($var);
 
+
         $data['c_selected'] = "USA";
 
-        $data['phone'] = null;
+        $data['phone_no'] = null;
 
 
         $data['services'] = $var->services ?? null;
 
         $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-       
 
         
         // $countries = $var->countries;
@@ -175,7 +154,6 @@ class DashboardController extends Controller
 
 
         // }
-
 
 
 
