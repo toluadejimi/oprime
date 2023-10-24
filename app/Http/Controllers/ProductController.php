@@ -427,11 +427,34 @@ class ProductController extends Controller
 
     public function sms_receive(Request $request)
     {
+
+
+        { "user_id": 5317342, "country_code": 1, "number": "+14386445195", "sender": "15878011923", "message": "Your WhatsApp code: 665-926 You can also tap on this link to verify your phone: v.whatsapp.com/665926 Don't share this code with others", "time_start": "2023-10-24 21:45:10", "time_left": 802, "operation_id": 108233828, "webhook_type": "receiving_sms", "code": "665926" }
        
 
         $parametersJson = json_encode($request->all());
         $result = " Body========> " . $parametersJson;
         send_notification_2($result);
+
+
+        SmsHistory::where('phone_no', $request->number)->where('order_id', $request->operation_id)->update([
+            'response' => $request->message,
+            'code'=>$request->code,
+            'status'=> 2
+        ]);
+
+
+        $get_id = SmsHistory::where('order_id', $operation_id)->first()->user_id;
+        $amount = SmsHistory::where('order_id', $operation_id)->first()->amount;
+
+
+        User::where('id', $get_id)->decrement('wallet', $amount);
+
+
+        $result = " Body========> Code has been sent";
+        send_notification_2($result);
+
+
 
 
 
