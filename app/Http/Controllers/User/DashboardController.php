@@ -154,6 +154,10 @@ class DashboardController extends Controller
 
         $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
 
+
+        $data['sms'] = SmsHistory::where('user_id', Auth::id())->where('status', 0)->get();
+
+
         
         // $countries = $var->countries;
 
@@ -174,6 +178,8 @@ class DashboardController extends Controller
 
 
     public function search(request $request){
+
+        $data['sms'] = SmsHistory::where('user_id', Auth::id())->where('status', 0)->get();
 
 
         $phone = SmsHistory::latest()->where('user_id', Auth::id())->where('status', 0)->first()->phone_no ?? null;
@@ -242,7 +248,7 @@ class DashboardController extends Controller
 
 
         $rate = env('RATE');
-        $result = $request->p_code * $rate;
+        $result = $request->p_code;
 
         if($result > Auth::user()->wallet){
 
@@ -250,24 +256,24 @@ class DashboardController extends Controller
 
         }
 
-        $ch= SmsHistory::where('user_id', Auth::id())->where('status', 0)->first()->order_id ?? null;
+        // $ch= SmsHistory::where('user_id', Auth::id())->where('status', 0)->first()->order_id ?? null;
 
-        if($ch != null){
+        // if($ch != null){
 
-            $phone = SmsHistory::latest()->where('user_id', Auth::id())->where('status', 0)->first()->phone_no ?? null;
-            if($phone == null){
+        //     $phone = SmsHistory::latest()->where('user_id', Auth::id())->where('status', 0)->first()->phone_no ?? null;
+        //     if($phone == null){
     
-                $data['phone_no'] = null;
+        //         $data['phone_no'] = null;
     
-            }else{
+        //     }else{
     
-                $data['phone_no'] = $phone;
+        //         $data['phone_no'] = $phone;
     
-            }
+        //     }
 
-            return redirect('user/instant')->with('error', "You have one open order with ID $ch, close it and try again");
+        //     return redirect('user/instant')->with('error', "You have one open order with ID $ch, close it and try again");
 
-        }
+        // }
 
         
 
@@ -289,8 +295,19 @@ class DashboardController extends Controller
         ));
 
         $var = curl_exec($curl);
-        curl_close($curl);
         $var = json_decode($var);
+        $order_id = $var->tzid ?? null;
+
+
+
+
+        if($order_id == null){
+
+
+        return back()->with('error','Number not available at the moment');
+
+
+        }
 
         $trx = new SmsHistory();
         $trx->order_id = $var->tzid;
@@ -299,6 +316,8 @@ class DashboardController extends Controller
         $trx->country = $var->country;
         $trx->service = $var->service;
         $trx->amount = $result;
+        $trx->time = $var->time;
+
         $trx->save();
 
 
@@ -332,8 +351,10 @@ class DashboardController extends Controller
         $data['phone'] = null;
         $data['services'] = $var->services ?? null;
         $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
+        $data['sms'] = SmsHistory::where('user_id', Auth::id())->where('status', 0)->get();
 
-        return view('user.device.instant', $data);
+
+        return redirect('user/instant')->with('message', 'Number ready to receive sms');
 
     }
 
@@ -349,25 +370,13 @@ class DashboardController extends Controller
         $data['countries'] = OnlinesimCounrtry::all();
 
 
-        $rate = env('RATE');
-        $result = $request->p_code * $rate;
-
-        if($result > Auth::user()->wallet){
-
-            return back()->with('error', 'Insufficient Funds, fund your wallet');
-
-        }
-
-        
-        $h_amount = User::where('id', Auth::id())->decrement('wallet', $result);
-
-
-
-
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
         CURLOPT_URL => "https://onlinesim.io/api/getState.php?apikey=$key&tzid=$request->order_id&message_to_code=0&orderby=asc&msg_list=1&clean=1&lang=en",
+        //CURLOPT_URL => "https://onlinesim.io/api/setOperationRevise.php?apikey=$key&$request->order_id&lang=en",
+
+        
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -388,10 +397,6 @@ class DashboardController extends Controller
 
 
         $res = $var->response ?? null;
-        $re2 = $var[0]->response ?? null;
-
-
-
         if($res == 'ERROR_NO_OPERATIONS'){
 
             SmsHistory::where('order_id', $request->order_id)->delete();
@@ -402,13 +407,38 @@ class DashboardController extends Controller
         }
 
 
+
+        $re2 = $var[0]->response ?? null;
         if($re2 == 'TZ_NUM_WAIT'){
 
 
+            SmsHistory::where('order_id', $request->order_id)->update(['time'=>$var[0]->time ]);
             return back()->with('error', 'Waiting for sms');
 
 
         }
+
+
+        $re2 = $var[0]->response ?? null;
+        if($re2 == 'TZ_NUM_ANSWER'){
+
+            $response = $var[0]->msg[0]->msg;
+            SmsHistory::where('order_id', $request->order_id)->update(['response'=>$response]);
+            return back()->with('message', 'Message has been received');
+
+
+        }
+
+
+
+
+        
+
+        return back()->with('error', 'Waiting for sms');
+
+        
+
+        
 
 
         

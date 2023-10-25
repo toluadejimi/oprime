@@ -142,7 +142,7 @@
                       @php
 
                       $rate = env('RATE');
-                      $result = $item->price * $rate;
+                      $result = $item->price * $rate + env('CHARGE');
 
                       @endphp
 
@@ -150,7 +150,9 @@
 
                     <tr>
                       <td><strong class="badge badge-primary"> NGN {{ number_format($result) }}</strong> | <a
-                          class="text-dark" href="number?code={{ $item->code}}&service={{ $item->slug }}&p_code={{ $item->price }}">{{ Str::upper($item->service) ?? "Name"
+                          class="text-dark"
+                          href="number?code={{ $item->code}}&service={{ $item->slug }}&p_code={{ $item->price }}">{{
+                          Str::upper($item->service) ?? "Name"
                           }} | <strong class="badge badge-warning"> {{ $item->count }}</strong> </a></td>
                     </tr>
 
@@ -302,41 +304,123 @@
 
         <div class="container content">
           <div class="row">
+
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+              @forelse ($sms as $data )
               <div class="card">
-                <div class="card-header">{{ $phone_no ?? "Choose a country and service to receive sms" }}</div>
+
+
+                <div class="card-header">{{ $data->phone_no ?? "Choose a country and service to receive sms" }} |  {{ $data->service }}  |   <div
+                    class="mr-3" id="countdown{{ $data->id }}"> <span class="text-red" id="timer{{ $data->id }}">{{ $data->time ?? 50 }}</span>s</div>
+                </div>
+
                 <div class="card-body height3">
                   <ul class="chat-list">
                     <li class="in">
-                      
 
-                      @if($phone_no != null)
                       <div class="chat-img">
                         <img alt="Avtar" src="https://bootdey.com/img/Content/avatar/avatar1.png">
                       </div>
 
-                      <div class="chat-body">
+                      <div class="chat-body mb-3">
                         <div class="chat-message">
                           <h5>Incoming SMS</h5>
-                          <div id="myDiv">Waiting for sms</div>
+                          <p class="text-white">{{ $data->response ?? "Waiting for sms" }}</p>
+                          {{-- <div id="myDiv">Waiting for sms</div> --}}
                         </div>
                       </div>
-                      @endif
                     </li>
-                    
-                  
+
+
                   </ul>
+
+                  <div class="row mt-4">
+                    <a  href="delete?order_id={{ $data->order_id }}" class="btn btn-sm btn-danger text-white">Delete</a>
+                    <a id="startButton{{ $data->id }}" href="recheck?order_id={{ $data->order_id }}" class="btn btn-sm btn-success text-white">Recheck
+                      SMS</a>
+                  </div>
                 </div>
+
+                <script>
+                  let countdownInterval;
+                  let remainingTime = {{ $data->time ?? 50 }}; // Initial countdown time in seconds
+          
+                  function startCountdown() {
+                      countdownInterval = setInterval(function () {
+                          remainingTime--;
+          
+                          if (remainingTime < 0) {
+                              clearInterval(countdownInterval);
+                              document.getElementById('countdown{{ $data->id }}').textContent = 'Time Expired';
+          
+                              // Send a POST request when the countdown reaches zero
+                              sendPostRequest();
+                          } else {
+                              document.getElementById('timer{{ $data->id }}').textContent = remainingTime;
+                          }
+                      }, 1000); // Update the countdown every 1 second
+                  }
+          
+                  function sendPostRequest() {
+                      // Create an XMLHttpRequest or use the fetch API to send a POST request
+                      const xhr = new XMLHttpRequest();
+                      xhr.open('POST', 'https://example.com/api/endpoint', true);
+          
+                      // Set up any necessary headers or data for the POST request
+                      // xhr.setRequestHeader('Content-Type', 'application/json');
+                      // const data = JSON.stringify({ key: 'value' });
+          
+                      xhr.onreadystatechange = function () {
+                          if (xhr.readyState === 4 && xhr.status === 200) {
+                              console.log('POST request was successful.');
+                          }
+                      };
+          
+                      // Send the POST request
+                      xhr.send(/*data*/);
+                  }
+          
+                  // Start the countdown and send the POST request on page load
+                  window.addEventListener('load', startCountdown);
+              </script>
+
+
+        
+
               </div>
+              @empty
+
+              <div class="card-header">{{"Choose a country and service to receive sms" }}</div>
+              <div class="card-body height3">
+
+              </div>
+
+
+
+              @endforelse
             </div>
-           
+
           </div>
         </div>
 
+
+
+
+
+
+        {{-- @if($phone_no != null)
+        <script>
+          document.getElementById('soundBtn').style.visibility='hidden';
+
+            function performSound(){
+            var soundButton = document.getElementById("soundBtn");
+            soundButton.click();
+            }
+
+          
+
        
 
-        @if($phone_no != null)
-        <script>
           // Function to refresh the div's content
             function refreshDiv() {
               var div = document.getElementById("myDiv");
@@ -360,8 +444,11 @@
                   if (xhr.status === 200) {
                       // If the response is successful and status is not 0, update the div with the response text
                       if (xhr.responseText !== 'null') {
-                          div.innerHTML = xhr.responseText;
+                      
+                        div.innerHTML = xhr.responseText;
+
                       } else {
+                       
                           div.innerHTML = "Waiting for sms";
                       }
                   } else {
@@ -384,7 +471,7 @@
 
 
         </script>
-        @endif
+        @endif --}}
 
 
 
@@ -406,7 +493,7 @@
 
   <div class="card">
 
-   
+
 
     <div class"card-body">
 
@@ -415,16 +502,15 @@
 
         <thead>
           <tr>
-          <th>Action</th>
-          <th>Order ID</th>
-          <th>Code</th>
-          <th>Phone Number</th>
-          <th>SMS Message</th>
-          <th>Amount</th>
-          <th>Status</th>
-          <th>Date/Time</th>
+            <th>Order ID</th>
+            <th>Code</th>
+            <th>Phone Number</th>
+            <th>SMS Message</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date/Time</th>
 
-        </tr>
+          </tr>
         </thead>
 
 
@@ -433,21 +519,6 @@
         <tbody>
 
           <tr>
-
-            @if($data->status == 0)
-            <td>
-              <a href="delete?order_id={{ $data->order_id }}"><span class="badge badge-pill badge-danger">Delete Order</span><a/>
-            </td>
-            <td>
-              <a href="recheck?order_id={{ $data->order_id }}"><span class="badge badge-pill badge-success">Recheck Order</span><a/>
-            </td>
-            @else
-
-            <td>
-              <span class="badge badge-pill badge-success">Completed</span>
-            </td>
-            
-            @endif
 
             <td>
               {{ $data->order_id }}
@@ -466,21 +537,21 @@
               {{ number_format($data->amount, 2) }}
             </td>
 
-             
 
 
-              <td>
-                {{$data->created_at}}
-              </td>
-         
+
+            <td>
+              {{$data->created_at}}
+            </td>
+
 
           </tr>
 
 
         </tbody>
-          
+
         @endforeach
-        
+
 
 
 

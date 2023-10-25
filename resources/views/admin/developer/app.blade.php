@@ -80,6 +80,23 @@
                     </div>
 
 
+                    <div class="from-group row mt-2">
+
+
+                        <label class="col-lg-12">{{ __('Charge') }}</label>
+                        <div class="col-lg-12">
+
+                            <div class="col-lg-12">
+                                <input type="number" name="charge" value="{{ env('CHARGE') }}" required=""
+                                    class="form-control text-black">
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
                     <div class="from-group row mt-3">
                         <div class="col-lg-12">
                             <button class="btn btn-neutral submit-button btn-sm float-left">{{ __('Update Settings')
