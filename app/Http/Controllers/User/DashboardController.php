@@ -105,6 +105,19 @@ class DashboardController extends Controller
 	public function instant()
 	{
 
+
+        $phone = SmsHistory::latest()->where('user_id', Auth::id())->where('status', 0)->first()->phone_no ?? null;
+        if($phone == null){
+
+            $data['phone_no'] = null;
+
+        }else{
+
+            $data['phone_no'] = $phone;
+
+        }
+
+
         $key = env('ONSIM');
 
         $data['countries'] = OnlinesimCounrtry::all();
@@ -135,7 +148,6 @@ class DashboardController extends Controller
 
         $data['c_selected'] = "USA";
 
-        $data['phone_no'] = null;
 
 
         $data['services'] = $var->services ?? null;
@@ -164,6 +176,17 @@ class DashboardController extends Controller
     public function search(request $request){
 
 
+        $phone = SmsHistory::latest()->where('user_id', Auth::id())->where('status', 0)->first()->phone_no ?? null;
+        if($phone == null){
+
+            $data['phone_no'] = null;
+
+        }else{
+
+            $data['phone_no'] = $phone;
+
+        }
+
 
         $key = env('ONSIM');
 
@@ -182,7 +205,6 @@ class DashboardController extends Controller
         CURLOPT_HTTPHEADER => array(
             'Content-Type: application/json',
             'Accept: application/json',
-            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
         ),
         ));
 
@@ -195,7 +217,6 @@ class DashboardController extends Controller
 
 
         $data['c_selected'] = OnlinesimCounrtry::where('code', $request->code)->first()->name;
-        $data['phone_no'] = null;
         $data['services'] = $var->services ?? null;
         $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
 
@@ -220,7 +241,7 @@ class DashboardController extends Controller
         $data['countries'] = OnlinesimCounrtry::all();
 
 
-        $rate = 1204;
+        $rate = env('RATE');
         $result = $request->p_code * $rate;
 
         if($result > Auth::user()->wallet){
@@ -229,11 +250,26 @@ class DashboardController extends Controller
 
         }
 
+        $ch= SmsHistory::where('user_id', Auth::id())->where('status', 0)->first()->order_id ?? null;
+
+        if($ch != null){
+
+            $phone = SmsHistory::latest()->where('user_id', Auth::id())->where('status', 0)->first()->phone_no ?? null;
+            if($phone == null){
+    
+                $data['phone_no'] = null;
+    
+            }else{
+    
+                $data['phone_no'] = $phone;
+    
+            }
+
+            return redirect('user/instant')->with('error', "You have one open order with ID $ch, close it and try again");
+
+        }
+
         
-        $h_amount = User::where('id', Auth::id())->decrement('wallet', $result);
-
-
-
 
         $curl = curl_init();
 
@@ -269,9 +305,6 @@ class DashboardController extends Controller
         $data['phone_no']= $var->number;
 
 
-
-
-
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -295,21 +328,12 @@ class DashboardController extends Controller
         $var = json_decode($var);
 
 
-
-    
-
-
         $data['c_selected'] = OnlinesimCounrtry::where('code', $request->code)->first()->name;
         $data['phone'] = null;
         $data['services'] = $var->services ?? null;
         $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
 
         return view('user.device.instant', $data);
-
-
-
-
-
 
     }
 
@@ -325,7 +349,7 @@ class DashboardController extends Controller
         $data['countries'] = OnlinesimCounrtry::all();
 
 
-        $rate = 1204;
+        $rate = env('RATE');
         $result = $request->p_code * $rate;
 
         if($result > Auth::user()->wallet){
@@ -343,7 +367,7 @@ class DashboardController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://onlinesim.io/api/getState.php?apikey=$key&tzid=$request->orcer_id&message_to_code=0&orderby=asc&msg_list=1&clean=1&lang=en",
+        CURLOPT_URL => "https://onlinesim.io/api/getState.php?apikey=$key&tzid=$request->order_id&message_to_code=0&orderby=asc&msg_list=1&clean=1&lang=en",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -362,57 +386,32 @@ class DashboardController extends Controller
         $var = json_decode($var);
 
 
-        dd($var);
 
-        $trx = new SmsHistory();
-        $trx->order_id = $var->tzid;
-        $trx->user_id = Auth::id();
-        $trx->phone_no = $var->number;
-        $trx->country = $var->country;
-        $trx->service = $var->service;
-        $trx->amount = $result;
-        $trx->save();
-
-
-        $data['phone_no']= $var->number;
+        $res = $var->response ?? null;
+        $re2 = $var[0]->response ?? null;
 
 
 
+        if($res == 'ERROR_NO_OPERATIONS'){
+
+            SmsHistory::where('order_id', $request->order_id)->delete();
+
+            return redirect('user/instant');
 
 
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => "",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'Authorization: Bearer T9x3DDM65LPgtZq-URtp49wG-wSP2XtK8-uV9r96Zd-Jmzq9U92yxTL8zz'
-        ),
-        ));
-
-        $var = curl_exec($curl);
-        curl_close($curl);
-        $var = json_decode($var);
+        }
 
 
+        if($re2 == 'TZ_NUM_WAIT'){
 
-    
+
+            return back()->with('error', 'Waiting for sms');
 
 
-        $data['c_selected'] = OnlinesimCounrtry::where('code', $request->code)->first()->name;
-        $data['phone'] = null;
-        $data['services'] = $var->services ?? null;
-        $data['sms_history'] = SmsHistory::where('user_id', Auth::id())->get();
+        }
 
-        return view('user.device.instant', $data);
+
+        
 
 
 
@@ -423,6 +422,17 @@ class DashboardController extends Controller
 
 
 
+
+    public function order_delete(request $request){
+
+
+        SmsHistory::where('order_id', $request->order_id)->delete();
+        return redirect('user/instant')->with('message', 'Order Deleted successfully');
+
+
+
+
+    }
 
 
 

@@ -38,12 +38,12 @@
 @endif
 
 
-{{-- <div class="">
+<div class="">
 
   <a href="instant" class="btn btn-lg btn-primary text-white mb-4">SMS Verification <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">New</span></a>
 
 
-</div> --}}
+</div>
 
 <div class="card card-stats">
   <!-- Card body -->

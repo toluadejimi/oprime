@@ -141,7 +141,7 @@
 
                       @php
 
-                      $rate = 1204;
+                      $rate = env('RATE');
                       $result = $item->price * $rate;
 
                       @endphp
@@ -318,7 +318,7 @@
                       <div class="chat-body">
                         <div class="chat-message">
                           <h5>Incoming SMS</h5>
-                          <div id="myDiv">Initial content</div>
+                          <div id="myDiv">Waiting for sms</div>
                         </div>
                       </div>
                       @endif
@@ -350,7 +350,7 @@
       
               // Define the POST data
               var postData = JSON.stringify({
-                  number: "081",
+                  number: {{ $phone_no }},
                   user_id: {{ Auth::user()->id }},
               });
 
@@ -362,7 +362,7 @@
                       if (xhr.responseText !== 'null') {
                           div.innerHTML = xhr.responseText;
                       } else {
-                          div.innerHTML = "Select a service";
+                          div.innerHTML = "Waiting for sms";
                       }
                   } else {
                       // Handle error cases
@@ -380,7 +380,7 @@
 
 
             // Call the refreshDiv function every second (1000 milliseconds)
-            setInterval(refreshDiv, 50000);
+            setInterval(refreshDiv, 3000);
 
 
         </script>
@@ -401,7 +401,7 @@
 
 
 
-<div class="col-xl-10 col-md-6 p-3">
+<div class="col-xl-12 col-md-6 p-3">
   <h5 class="p-3">Recent SMS Transactions</h5>
 
   <div class="card">
@@ -411,17 +411,19 @@
     <div class"card-body">
 
 
-      <table class="table table-responsive">
+      <table class="table table-responsive table-borderless">
 
         <thead>
           <tr>
+          <th>Action</th>
           <th>Order ID</th>
-          <th>Country</th>
+          <th>Code</th>
           <th>Phone Number</th>
           <th>SMS Message</th>
           <th>Amount</th>
           <th>Status</th>
-          <th>Action</th>
+          <th>Date/Time</th>
+
         </tr>
         </thead>
 
@@ -432,17 +434,30 @@
 
           <tr>
 
+            @if($data->status == 0)
+            <td>
+              <a href="delete?order_id={{ $data->order_id }}"><span class="badge badge-pill badge-danger">Delete Order</span><a/>
+            </td>
+            <td>
+              <a href="recheck?order_id={{ $data->order_id }}"><span class="badge badge-pill badge-success">Recheck Order</span><a/>
+            </td>
+            @else
+
+            <td>
+              <span class="badge badge-pill badge-success">Completed</span>
+            </td>
+            
+            @endif
+
             <td>
               {{ $data->order_id }}
             </td>
             <td>
-              {{ $data->country }}
+              {{ $data->code }}
             </td>
             <td>
               {{ $data->phone_no }}
             </td>
-           
-
             <td>
               {{ $data->response ?? "Waiting for sms"}}
             </td>
@@ -450,42 +465,13 @@
             <td>
               {{ number_format($data->amount, 2) }}
             </td>
-            
-              @if($data->status == 0)
-              <td>
-                <span class="badge badge-pill badge-warning">ON-Hold</span>
-              </td>
-              @else
+
+             
+
 
               <td>
-                <span class="badge badge-pill badge-success">Successful</span>
+                {{$data->created_at}}
               </td>
-              
-              @endif
-
-              @if($data->status == 0)
-              <td>
-                <a href="/order-cancle?order_id={{ $data->order_id }}"><span class="badge badge-pill badge-danger">Cancle Order</span><a/>
-              </td>
-              @else
-
-              <td>
-                <span class="badge badge-pill badge-success">Completed</span>
-              </td>
-              
-              @endif
-
-              @if($data->status == 0)
-              <td>
-                <a href="recheck?order_id={{ $data->order_id }}"><span class="badge badge-pill badge-success">Recheck Order</span><a/>
-              </td>
-              @else
-
-              <td>
-                <span class="badge badge-pill badge-success">Completed</span>
-              </td>
-              
-              @endif
          
 
           </tr>

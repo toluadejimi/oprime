@@ -63,6 +63,9 @@ class DeveloperSettingsController extends Controller
             $this->editEnv('APP_DEBUG', filter_var($request->app_debug,FILTER_VALIDATE_BOOLEAN),true);
             $this->editEnv('TIME_ZONE', $request->timezone);
             $this->editEnv('DEFAULT_LANG', $request->default_lang ?? 'en');
+            $this->editEnv('RATE', $request->rate);
+
+
 
             
            return response()->json(['message'=>__('Global Settings Updated...')]);

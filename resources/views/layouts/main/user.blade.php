@@ -13,6 +13,12 @@
     </a>
   </li>
   <li class="nav-item">
+    <a class="nav-link {{ Request::is('user/instant*') ? 'active' : '' }}" href="instant">
+      <i class="fi-rs-sensor-on"></i>
+      <span class="nav-link-text">{{ __('Instant SMS') }}</span>
+    </a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link {{ Request::is('user/device*') ? 'active' : '' }}" href="{{ route('user.device.index') }}">
       <i class="fi-rs-sensor-on"></i>
       <span class="nav-link-text">{{ __('Buy Logs') }}</span>

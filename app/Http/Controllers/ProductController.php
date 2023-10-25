@@ -7,6 +7,7 @@ use App\Models\ItemLog;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\SmsHistory;
+
 use App\Models\Sold;
 use App\Models\Transaction;
 use App\Models\User;
@@ -413,12 +414,19 @@ class ProductController extends Controller
     {
 
 
+        $no = "+".$request->number;
 
-        $readyState = 2;
-        $status = 200;
-        $responseText = "hi" ?? null;
+        $responseText = SmsHistory::latest()->where('user_id', $request->user_id)->where('phone_no', $no)->first()->response ?? null;
 
-        return   $responseText ;
+        if( $responseText != null){
+
+            return   $responseText;
+
+        }else{
+
+            return "null";
+        }
+        
 
     
 
@@ -430,7 +438,8 @@ class ProductController extends Controller
     {
 
 
-    
+
+
         $parametersJson = json_encode($request->all());
         $result = " Body========> " . $parametersJson;
         send_notification_2($result);
@@ -445,6 +454,7 @@ class ProductController extends Controller
 
         $get_id = SmsHistory::where('order_id', $request->operation_id)->first()->user_id;
         $amount = SmsHistory::where('order_id', $request->operation_id)->first()->amount;
+
 
 
         User::where('id', $get_id)->decrement('wallet', $amount);
