@@ -533,5 +533,3 @@ if (!function_exists('filterXss')) {
 
     }
 }
-
-?>

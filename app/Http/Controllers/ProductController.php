@@ -122,10 +122,7 @@ class ProductController extends Controller
     public function verify_payment(request $request)
     {
 
-        $ip1 = "197.120.55.156";
-        $ip2 = "197.210.227.122";
-        $ip3 = "197.210.226.63";
-
+     
 
         $trx_id = $request->trans_id;
         $ip = $request->ip();
@@ -133,12 +130,6 @@ class ProductController extends Controller
 
 
 
-
-        if($ip == $ip1 || $ip == $ip2 || $ip == $ip3 ){
-
-            return redirect('user/dashboard')->with('error', 'Transaction Declined');
-
-        }
 
 
         if ($status == 'failed') {
@@ -151,10 +142,6 @@ class ProductController extends Controller
 
             return redirect('user/dashboard')->with('error', 'Transaction Declined');
         }
-
-
-
-
 
 
         $trxstatus = Transaction::where('trx_ref', $trx_id)->first()->status ?? null;
@@ -201,6 +188,32 @@ class ProductController extends Controller
             send_notification($message);
 
             $usr = User::where('id', Auth::id())->first() ?? null;
+
+
+            $curl = curl_init();
+
+            $databody= array('order_id' => "$order_id");
+    
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://web.enkpay.com/api/resolve-complete',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $databody,
+            ));
+    
+            $var = curl_exec($curl);
+            curl_close($curl);
+            $var = json_decode($var);
+
+
+            $message =  "$order_id has been resloved";
+            send_notification_2($message);
+
 
             if ($usr->email != null) {
 
