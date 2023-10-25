@@ -248,7 +248,7 @@ class DashboardController extends Controller
 
 
         $rate = env('RATE');
-        $result = $request->p_code;
+        $result = $request->p_code + env('CHARGE');
 
         if($result > Auth::user()->wallet){
 
