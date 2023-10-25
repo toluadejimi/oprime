@@ -454,13 +454,26 @@ class ProductController extends Controller
 
         $get_id = SmsHistory::where('order_id', $request->operation_id)->first()->user_id;
         $amount = SmsHistory::where('order_id', $request->operation_id)->first()->amount;
-
-
-
+        $user_email = User::where('id', $get_id)->first()->email ?? null;
         User::where('id', $get_id)->decrement('wallet', $amount);
 
 
-        $result = " Body========> Code has been sent";
+
+        $trx_ref = "TRX - " .date("his").random_int(1000000, 9999999);
+        $trx = new Transaction();
+        $trx->trx_ref = $trx_ref;
+        $trx->user_id = Auth::id();
+        $trx->amount = $amount;
+        $trx->type = 1;
+        $trx->status = 1;
+        $trx->save();
+
+
+        $result = "$user_email just verifed a number with id $request->operation_id";
+        send_notification_2($result);
+
+
+        $result = "$user_email just verifed a number with id $request->operation_id";
         send_notification_2($result);
 
 
